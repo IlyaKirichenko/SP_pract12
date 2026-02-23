@@ -52,12 +52,19 @@ int main()
     while (true)
     {
         cout << "\nНажмите Enter для печати" << endl;
+        cin.ignore();
         cin.get();
 
-        WaitForSingleObject(PrinterMutex, INFINITE);
-        cout << "Задание отправлено " << endl;
-        Sleep(100);            
-        ReleaseMutex(PrinterMutex);
+        DWORD waitResult = WaitForSingleObject(PrinterMutex, INFINITE);
+
+        if (waitResult == WAIT_OBJECT_0) {
+            cout << "Задание отправлено в очередь!" << endl;
+            ReleaseMutex(PrinterMutex);
+            cout << "Ожидание завершения печати принтером..." << endl;
+        }
+        else {
+            cout << "Ошибка доступа к принтеру!" << endl;
+        }
     }
 
 
